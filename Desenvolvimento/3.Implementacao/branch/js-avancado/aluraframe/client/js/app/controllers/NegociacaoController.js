@@ -7,11 +7,8 @@ class NegociacaoController {
         this._inputQuantidade = $('#quantidade');
         this._inputValor = $('#valor');
 
-        this._listaNegociacoes = new ListaNegociacoes(this, function(model) {
-            //chamando a armadilha -> atualizar
-            this._negociacoesView.update(model);
-        
-        });
+        this._listaNegociacoes = new ListaNegociacoes(model => 
+            this._negociacoesView.update(model));
         
         this._negociacoesView = new NegociacoesView($('#negociacoesView'));
         //mantém este update para a primeira renderização da lista de negociações
