@@ -3,30 +3,27 @@ class NegociacaoController {
     constructor() {
 
         let $ = document.querySelector.bind(document);
+
         this._inputData = $('#data');
         this._inputQuantidade = $('#quantidade');
         this._inputValor = $('#valor');
 
-        this._negociacoesView = new NegociacoesView($('#negociacoesView'));
-        this._listaNegociacoes = new Bind(
-            new ListaNegociacoes(),     //modelo
-            this._negociacoesView,      //view
-            ['adiciona', 'esvazia']);   //condição
 
-        this._mensagemView = new MensagemView($('#mensagemView'));
+        this._listaNegociacoes = new Bind(
+            new ListaNegociacoes(),                          //modelo
+            new NegociacoesView($('#negociacoesView')),      //view
+            'adiciona', 'esvazia');                          //condição
+
+        
         this._mensagem = new Bind(
-            new Mensagem(),
-            this._mensagemView,
-            ['texto']);
+            new Mensagem(),                                 //modelo
+            new MensagemView($('#mensagemView')),           //view
+            'texto');                                       //condição
 
     }
 
 
-
-
-
     adiciona(event) {
-
         event.preventDefault();
         this._listaNegociacoes.adiciona(this._criaNegociacao());
         this._mensagem.texto = 'Negociação adicionada com sucesso';
@@ -34,18 +31,10 @@ class NegociacaoController {
     }
 
 
-
-
-
-
     apaga() {
         this._listaNegociacoes.esvazia();
         this._mensagem.texto = 'Negociações apagadas com sucesso';
     }
-
-
-
-
 
     _criaNegociacao() {
 
@@ -56,8 +45,6 @@ class NegociacaoController {
     }
 
 
-
-
     _limpaFormulario() {
 
         this._inputData.value = '';
@@ -66,6 +53,3 @@ class NegociacaoController {
         this._inputData.focus();
     }
 }
-/*
-Factory -> classe determinada para criar um tipo de objeto
-*/
