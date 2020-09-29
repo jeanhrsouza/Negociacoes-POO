@@ -1,7 +1,6 @@
 class ProxyFactory {
 
-    //Não se faz necessário 
-    //pode invocar um método estático para criar
+    //Não se faz necessário, porém pode invocar um método estático para criar
     static create(objeto, props, acao) {
 
         return new Proxy(objeto, {
@@ -19,27 +18,23 @@ class ProxyFactory {
                 if (props.includes(prop) &&  ProxyFactory._ehfuncao(target[prop])) {
 
                     //tem que ser function para ter o "this" dinâmico. Não pode ser arrow function que possui escopo léxico.
-                    return function () {
+                    return function() {
 
-                        console.log(`método '${prop}' interceptado`);
-
-                        Reflect.apply(target[prop], target, arguments);
-                       
-                       //retorna uma possível ação de um alvo
-                        return acao(target);
+                        console.log(`interceptando ${prop}`);
+                        let retorno = Reflect.apply(target[prop], target, arguments);
+                        acao(target);
+                        return retorno;
                     }
+                    
                 }
                 return Reflect.get(target, prop, receiver);
             },
 
             set(target, prop, value, receiver) {
-                if(props.includes(prop)) {
-                    target[prop] = value;
-                    acao(target);
-                }
 
-                return Reflect.set(target, prop, value, receiver);
-
+                let retorno = Reflect.set(target, prop, value, receiver);
+                if(props.includes(prop)) acao(target);    // só executa acao(target) se for uma propriedade monitorada
+                return retorno; 
             }
         });
 
