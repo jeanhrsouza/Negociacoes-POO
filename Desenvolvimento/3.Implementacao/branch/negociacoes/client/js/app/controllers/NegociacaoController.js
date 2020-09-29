@@ -29,43 +29,30 @@ class NegociacaoController {
         this._mensagem.texto = 'Negociação adicionada com sucesso';
         this._limpaFormulario();
     }
-    
+
 
     importaNegociacoes() {
 
         let service = new NegociacaoService();
-    
-        /**
-         * Importando negociações da semana
-         */
-        service.obterNegociacoesDaSemana()
-          .then(negociacoes => {
-            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
-        })
-        .catch(erro => this._mensagem.texto = erro);
-    
-        /**
-         * Importando negociações da semana anterior
-         */
-        service.obterNegociacoesDaSemanaAnterior()
-          .then(negociacoes => {
-            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
-        })
-        .catch(erro => this._mensagem.texto = erro);
-    
 
         /**
-         * Importando negociações da semana retrasada
+         * Padrão de projeto Promisse all
          */
-        service.obterNegociacoesDaSemanaRetrasada()
-          .then(negociacoes => {
-            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações da semana obtidas com sucesso';
+
+        //Promise realiza "flatting"
+        // ->reduce serve para pegar o elemento do array
+        Promise.all([
+            service.obterNegociacoesDaSemana(),
+            service.obterNegociacoesDaSemanaAnterior(),
+            service.obterNegociacoesDaSemanaRetrasada()]
+        ).then(negociacoes => {
+            negociacoes
+                .reduce((arrayAchatado, array) => arrayAchatado.concat(array), [])
+                .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+            this._mensagem.texto = 'Negociações importadas com sucesso';
         })
-        .catch(erro => this._mensagem.texto = erro);
-    
+            .catch(erro => this._mensagem.texto = erro);
+
     }
 
 
