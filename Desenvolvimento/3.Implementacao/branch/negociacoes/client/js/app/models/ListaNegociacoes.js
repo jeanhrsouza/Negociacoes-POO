@@ -26,4 +26,5 @@ class ListaNegociacoes {
     esvazia() {
         this._negociacoes = [];
     }
+    
   }

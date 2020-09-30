@@ -18,9 +18,9 @@ class NegociacaoController {
 
 
         this._mensagem = new Bind(
-            new Mensagem(),                                         //modelo
-            new MensagemView($('#mensagemView')),                   //view
-            'texto');                                               //condição
+            new Mensagem(),                                                  //modelo
+            new MensagemView($('#mensagemView')),                            //view
+            'texto');                                                        //condição
 
 
 
@@ -46,9 +46,10 @@ class NegociacaoController {
 
 
     importaNegociacoes() {
+        
         /**
          * Padrão de programação Promisse all
-         */
+        */
         
         let service = new NegociacaoService();
         service
