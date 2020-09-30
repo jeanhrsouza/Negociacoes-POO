@@ -1,9 +1,14 @@
 class NegociacaoService {
 
+
     constructor() {
         this._http = new HttpService();
     }
 
+    /**
+     * Método que realiza o retorno da Promise.
+     * 
+     */
     obterNegociacoes() {
         return Promise.all([
             this.obterNegociacoesDaSemana(),
@@ -18,6 +23,14 @@ class NegociacaoService {
             throw new Error(erro);
         });
     }
+
+
+    /**
+     * Métodos que realizam Fetch nas API's
+     * 1. API da semana
+     * 2. API da semana anterior
+     * 3. API da semana retrasada
+     */
 
     obterNegociacoesDaSemana() {
 
@@ -34,7 +47,6 @@ class NegociacaoService {
                 })
         });
     }
-
 
     obterNegociacoesDaSemanaAnterior() {
 
