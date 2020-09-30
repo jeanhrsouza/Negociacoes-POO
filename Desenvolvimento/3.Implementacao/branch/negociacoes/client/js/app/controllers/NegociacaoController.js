@@ -3,6 +3,7 @@ class NegociacaoController {
     constructor() {
 
         let $ = document.querySelector.bind(document);
+        this._ordemAtual = '';
 
         this._inputData = $('#data');
         this._inputQuantidade = $('#quantidade');
@@ -10,16 +11,29 @@ class NegociacaoController {
 
 
         this._listaNegociacoes = new Bind(
-            new ListaNegociacoes(),                          //modelo
-            new NegociacoesView($('#negociacoesView')),      //view
-            'adiciona', 'esvazia');                          //condição
+            new ListaNegociacoes(),                                          //modelo
+            new NegociacoesView($('#negociacoesView')),                      //view
+            'adiciona', 'esvazia', 'odena', 'inverteOrdem');                 //condição
+
 
 
         this._mensagem = new Bind(
-            new Mensagem(),                                 //modelo
-            new MensagemView($('#mensagemView')),           //view
-            'texto');                                       //condição
+            new Mensagem(),                                         //modelo
+            new MensagemView($('#mensagemView')),                   //view
+            'texto');                                               //condição
 
+
+
+    }
+
+
+    ordena(coluna) {
+        if(this._ordemAtual == coluna) {
+            this._listaNegociacoes.inverteOrdem();
+        } else {
+            this._listaNegociacoes.ordena((a, b) => a[coluna] - b[coluna]);    
+        }
+        this._ordemAtual = coluna;
     }
 
 
@@ -32,27 +46,18 @@ class NegociacaoController {
 
 
     importaNegociacoes() {
-
-        let service = new NegociacaoService();
-
         /**
-         * Padrão de projeto Promisse all
+         * Padrão de programação Promisse all
          */
-
-        //Promise realiza "flatting"
-        // ->reduce serve para pegar o elemento do array
-        Promise.all([
-            service.obterNegociacoesDaSemana(),
-            service.obterNegociacoesDaSemanaAnterior(),
-            service.obterNegociacoesDaSemanaRetrasada()]
-        ).then(negociacoes => {
-            negociacoes
-                .reduce((arrayAchatado, array) => arrayAchatado.concat(array), [])
-                .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações importadas com sucesso';
-        })
-            .catch(erro => this._mensagem.texto = erro);
-
+        
+        let service = new NegociacaoService();
+        service
+            .obterNegociacoes()
+            .then(negociacoes => {
+                negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+                this._mensagem.texto = 'Negociações do período importadas com sucesso';
+            })
+            .catch(error => this._mensagem.texto = error);
     }
 
 
